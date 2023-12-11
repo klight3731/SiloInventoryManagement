@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="UnitedSugarsSAPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Exceptions">
+          <Key>
+            <PropertyRef Name="ExceptionID" />
+          </Key>
+          <Property Name="ExceptionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Message" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="StackTrace" Type="varchar(max)" Nullable="false" />
+          <Property Name="DateOccurred" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Locations">
+          <Key>
+            <PropertyRef Name="LocationID" />
+          </Key>
+          <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LocationDescription" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RecordTypes">
+          <Key>
+            <PropertyRef Name="RecordTypeID" />
+          </Key>
+          <Property Name="RecordTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecordTypeDescription" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SiloInventory">
+          <Key>
+            <PropertyRef Name="SiloInventoryID" />
+          </Key>
+          <Property Name="SiloInventoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecordTypeID" Type="int" Nullable="false" />
+          <Property Name="LocationID" Type="int" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="Comment" Type="varchar" MaxLength="250" />
+          <Property Name="EnteredBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DateModified" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_SiloInventory_Locations">
+          <End Role="Locations" Type="Self.Locations" Multiplicity="1" />
+          <End Role="SiloInventory" Type="Self.SiloInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Locations">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="SiloInventory">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SiloInventory_RecordTypes">
+          <End Role="RecordTypes" Type="Self.RecordTypes" Multiplicity="1" />
+          <End Role="SiloInventory" Type="Self.SiloInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RecordTypes">
+              <PropertyRef Name="RecordTypeID" />
+            </Principal>
+            <Dependent Role="SiloInventory">
+              <PropertyRef Name="RecordTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="up_Exceptions_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Message" Type="varchar" Mode="In" />
+          <Parameter Name="StackTrace" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="up_Locations_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="up_Locations_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="LocationDescription" Type="varchar" Mode="In" />
+          <Parameter Name="LocationID" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="up_Locations_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="LocationDescription" Type="varchar" Mode="In" />
+          <Parameter Name="LocationID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="up_RecordTypes_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="up_RecordTypes_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RecordTypeDescription" Type="varchar" Mode="In" />
+          <Parameter Name="RecordTypeID" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="up_RecordTypes_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RecordTypeDescription" Type="varchar" Mode="In" />
+          <Parameter Name="RecordTypeID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="up_SiloInventory_GetByDateRange" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="StartDate" Type="date" Mode="In" />
+          <Parameter Name="EndDate" Type="date" Mode="In" />
+        </Function>
+        <Function Name="up_SiloInventory_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RecordTypeID" Type="int" Mode="In" />
+          <Parameter Name="LocationID" Type="int" Mode="In" />
+          <Parameter Name="Date" Type="date" Mode="In" />
+          <Parameter Name="Value" Type="decimal" Mode="In" />
+          <Parameter Name="Comment" Type="varchar" Mode="In" />
+          <Parameter Name="EnteredBy" Type="varchar" Mode="In" />
+          <Parameter Name="DateModified" Type="datetime" Mode="In" />
+          <Parameter Name="SiloInventoryID" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="up_SiloInventory_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SiloInventoryID" Type="int" Mode="In" />
+          <Parameter Name="LocationID" Type="int" Mode="In" />
+          <Parameter Name="Date" Type="date" Mode="In" />
+          <Parameter Name="Value" Type="decimal" Mode="In" />
+          <Parameter Name="Comment" Type="varchar" Mode="In" />
+          <Parameter Name="EnteredBy" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="UnitedSugarsSAPModelStoreContainer">
+          <EntitySet Name="Exceptions" EntityType="Self.Exceptions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RecordTypes" EntityType="Self.RecordTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SiloInventory" EntityType="Self.SiloInventory" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_SiloInventory_Locations" Association="Self.FK_SiloInventory_Locations">
+            <End Role="Locations" EntitySet="Locations" />
+            <End Role="SiloInventory" EntitySet="SiloInventory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SiloInventory_RecordTypes" Association="Self.FK_SiloInventory_RecordTypes">
+            <End Role="RecordTypes" EntitySet="RecordTypes" />
+            <End Role="SiloInventory" EntitySet="SiloInventory" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="UnitedSugarsSAPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="UnitedSugarsSAPEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="up_SiloInventory_GetByDateRange" EntitySet="SiloInventories" ReturnType="Collection(UnitedSugarsSAPModel.SiloInventory)">
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <EntitySet Name="Locations" EntityType="UnitedSugarsSAPModel.Location" />
+          <EntitySet Name="RecordTypes" EntityType="UnitedSugarsSAPModel.RecordType" />
+          <FunctionImport Name="up_Locations_Insert">
+            <Parameter Name="LocationDescription" Mode="In" Type="String" />
+            <Parameter Name="LocationID" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="up_Locations_Update">
+            <Parameter Name="LocationDescription" Mode="In" Type="String" />
+            <Parameter Name="LocationID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="up_RecordTypes_Insert">
+            <Parameter Name="RecordTypeDescription" Mode="In" Type="String" />
+            <Parameter Name="RecordTypeID" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="up_RecordTypes_Update">
+            <Parameter Name="RecordTypeDescription" Mode="In" Type="String" />
+            <Parameter Name="RecordTypeID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="up_Locations_Get" EntitySet="Locations" ReturnType="Collection(UnitedSugarsSAPModel.Location)" />
+          <FunctionImport Name="up_RecordTypes_Get" EntitySet="RecordTypes" ReturnType="Collection(UnitedSugarsSAPModel.RecordType)" />
+          <FunctionImport Name="up_SiloInventory_Insert">
+            <Parameter Name="RecordTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="LocationID" Mode="In" Type="Int32" />
+            <Parameter Name="Date" Mode="In" Type="DateTime" />
+            <Parameter Name="Value" Mode="In" Type="Decimal" />
+            <Parameter Name="Comment" Mode="In" Type="String" />
+            <Parameter Name="EnteredBy" Mode="In" Type="String" />
+            <Parameter Name="DateModified" Mode="In" Type="DateTime" />
+            <Parameter Name="SiloInventoryID" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="up_SiloInventory_Update">
+            <Parameter Name="SiloInventoryID" Mode="In" Type="Int32" />
+            <Parameter Name="LocationID" Mode="In" Type="Int32" />
+            <Parameter Name="Date" Mode="In" Type="DateTime" />
+            <Parameter Name="Value" Mode="In" Type="Decimal" />
+            <Parameter Name="Comment" Mode="In" Type="String" />
+            <Parameter Name="EnteredBy" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Exceptions" EntityType="UnitedSugarsSAPModel.Exception" />
+          <FunctionImport Name="up_Exceptions_Insert">
+            <Parameter Name="Message" Mode="In" Type="String" />
+            <Parameter Name="StackTrace" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="SiloInventories" EntityType="UnitedSugarsSAPModel.SiloInventory" />
+          <AssociationSet Name="FK_SiloInventory_Locations" Association="UnitedSugarsSAPModel.FK_SiloInventory_Locations">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="SiloInventory" EntitySet="SiloInventories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SiloInventory_RecordTypes" Association="UnitedSugarsSAPModel.FK_SiloInventory_RecordTypes">
+            <End Role="RecordType" EntitySet="RecordTypes" />
+            <End Role="SiloInventory" EntitySet="SiloInventories" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocationID" />
+          </Key>
+          <Property Name="LocationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LocationDescription" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="SiloInventories" Relationship="UnitedSugarsSAPModel.FK_SiloInventory_Locations" FromRole="Location" ToRole="SiloInventory" />
+        </EntityType>
+        <EntityType Name="RecordType">
+          <Key>
+            <PropertyRef Name="RecordTypeID" />
+          </Key>
+          <Property Name="RecordTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecordTypeDescription" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="SiloInventories" Relationship="UnitedSugarsSAPModel.FK_SiloInventory_RecordTypes" FromRole="RecordType" ToRole="SiloInventory" />
+        </EntityType>
+        <EntityType Name="Exception">
+          <Key>
+            <PropertyRef Name="ExceptionID" />
+          </Key>
+          <Property Name="ExceptionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="StackTrace" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DateOccurred" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="SiloInventory">
+          <Key>
+            <PropertyRef Name="SiloInventoryID" />
+          </Key>
+          <Property Name="SiloInventoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecordTypeID" Type="Int32" Nullable="false" />
+          <Property Name="LocationID" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="3" />
+          <Property Name="Comment" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="EnteredBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Location" Relationship="UnitedSugarsSAPModel.FK_SiloInventory_Locations" FromRole="SiloInventory" ToRole="Location" />
+          <NavigationProperty Name="RecordType" Relationship="UnitedSugarsSAPModel.FK_SiloInventory_RecordTypes" FromRole="SiloInventory" ToRole="RecordType" />
+        </EntityType>
+        <Association Name="FK_SiloInventory_Locations">
+          <End Type="UnitedSugarsSAPModel.Location" Role="Location" Multiplicity="1" />
+          <End Type="UnitedSugarsSAPModel.SiloInventory" Role="SiloInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="SiloInventory">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SiloInventory_RecordTypes">
+          <End Type="UnitedSugarsSAPModel.RecordType" Role="RecordType" Multiplicity="1" />
+          <End Type="UnitedSugarsSAPModel.SiloInventory" Role="SiloInventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RecordType">
+              <PropertyRef Name="RecordTypeID" />
+            </Principal>
+            <Dependent Role="SiloInventory">
+              <PropertyRef Name="RecordTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="UnitedSugarsSAPModelStoreContainer" CdmEntityContainer="UnitedSugarsSAPEntities">
+          <FunctionImportMapping FunctionImportName="up_SiloInventory_GetByDateRange" FunctionName="UnitedSugarsSAPModel.Store.up_SiloInventory_GetByDateRange" />
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="UnitedSugarsSAPModel.Location">
+              <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="LocationDescription" ColumnName="LocationDescription" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RecordTypes">
+            <EntityTypeMapping TypeName="UnitedSugarsSAPModel.RecordType">
+              <MappingFragment StoreEntitySet="RecordTypes">
+                <ScalarProperty Name="RecordTypeDescription" ColumnName="RecordTypeDescription" />
+                <ScalarProperty Name="RecordTypeID" ColumnName="RecordTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="up_Locations_Insert" FunctionName="UnitedSugarsSAPModel.Store.up_Locations_Insert" />
+          <FunctionImportMapping FunctionImportName="up_Locations_Update" FunctionName="UnitedSugarsSAPModel.Store.up_Locations_Update" />
+          <FunctionImportMapping FunctionImportName="up_RecordTypes_Insert" FunctionName="UnitedSugarsSAPModel.Store.up_RecordTypes_Insert" />
+          <FunctionImportMapping FunctionImportName="up_RecordTypes_Update" FunctionName="UnitedSugarsSAPModel.Store.up_RecordTypes_Update" />
+          <FunctionImportMapping FunctionImportName="up_Locations_Get" FunctionName="UnitedSugarsSAPModel.Store.up_Locations_Get" />
+          <FunctionImportMapping FunctionImportName="up_RecordTypes_Get" FunctionName="UnitedSugarsSAPModel.Store.up_RecordTypes_Get" />
+          <FunctionImportMapping FunctionImportName="up_SiloInventory_Insert" FunctionName="UnitedSugarsSAPModel.Store.up_SiloInventory_Insert" />
+          <FunctionImportMapping FunctionImportName="up_SiloInventory_Update" FunctionName="UnitedSugarsSAPModel.Store.up_SiloInventory_Update" />
+          <EntitySetMapping Name="Exceptions">
+            <EntityTypeMapping TypeName="UnitedSugarsSAPModel.Exception">
+              <MappingFragment StoreEntitySet="Exceptions">
+                <ScalarProperty Name="DateOccurred" ColumnName="DateOccurred" />
+                <ScalarProperty Name="StackTrace" ColumnName="StackTrace" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="ExceptionID" ColumnName="ExceptionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="up_Exceptions_Insert" FunctionName="UnitedSugarsSAPModel.Store.up_Exceptions_Insert" />
+          <EntitySetMapping Name="SiloInventories">
+            <EntityTypeMapping TypeName="UnitedSugarsSAPModel.SiloInventory">
+              <MappingFragment StoreEntitySet="SiloInventory">
+                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
+                <ScalarProperty Name="EnteredBy" ColumnName="EnteredBy" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="RecordTypeID" ColumnName="RecordTypeID" />
+                <ScalarProperty Name="SiloInventoryID" ColumnName="SiloInventoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
